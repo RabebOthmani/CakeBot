@@ -30,7 +30,7 @@ namespace CakeBot
         /// Key in the bot config (.bot file) for the LUIS instance.
         /// In the .bot file, multiple instances of LUIS can be configured.
         /// </summary>
-        public static readonly string LuisConfiguration = "basic-bot-LUIS";
+        public static readonly string LuisConfiguration = "CakeBot";
 
         private readonly IStatePropertyAccessor<GreetingState> _greetingStateAccessor;
         private readonly IStatePropertyAccessor<DialogState> _dialogStateAccessor;
@@ -235,7 +235,6 @@ namespace CakeBot
 
                 // Supported LUIS Entities
                 string[] userNameEntities = { "userName", "userName_paternAny" };
-                string[] userLocationEntities = { "userLocation", "userLocation_patternAny" };
 
                 // Update any entities
                 // Note: Consider a confirm dialog, instead of just updating.
@@ -247,17 +246,6 @@ namespace CakeBot
                         // Capitalize and set new user name.
                         var newName = (string)entities[name][0];
                         greetingState.Name = char.ToUpper(newName[0]) + newName.Substring(1);
-                        break;
-                    }
-                }
-
-                foreach (var city in userLocationEntities)
-                {
-                    if (entities[city] != null)
-                    {
-                        // Captilize and set new city.
-                        var newCity = (string)entities[city][0];
-                        greetingState.City = char.ToUpper(newCity[0]) + newCity.Substring(1);
                         break;
                     }
                 }

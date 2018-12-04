@@ -1,14 +1,10 @@
-# Managing the conversation flow with a bot-Branch 0
-In this branch, we are simply creating a new Basic-Bot project.
+# Managing the conversation flow with a bot-Branch 1
+In this branch, we are working on the very first interaction between the user and bot.
+We are:
 
-## Prerequisites
-### Install V4 template
-  -
-### Install Bot Emulator V4
--
-## Testing & connecting to the bot using Bot Framework Emulator
-- Launch the Bot Framework Emulator
-- File -> Open bot and navigate to your local project folder
-- Select `BotConfiguration.bot` file
+* Creating a welcome adaptive card
+* Creating a greeting dialog to gather basic information about the user, the name in this case. 
+
+
 
 

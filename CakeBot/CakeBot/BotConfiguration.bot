@@ -8,6 +8,16 @@
       "appId": "",
       "appPassword": "",
       "id": "1"
+    },
+    {
+      "type": "luis",
+      "name": "PUT_NAME",
+      "appId": "APP_ID",
+      "authoringKey": "AUTHORITY_KEY",
+      "subscriptionKey": "SUBSCRIPTION_KEY",
+      "version": "VERSION",
+      "region": "REGION",
+      "id": "ID"
     }
   ],
   "padlock": "",
