@@ -9,5 +9,7 @@ namespace CakeBot
     public class GreetingState
     {
         public string Name { get; set; }
+
+        public string CakeName { get; set; }
     }
 }

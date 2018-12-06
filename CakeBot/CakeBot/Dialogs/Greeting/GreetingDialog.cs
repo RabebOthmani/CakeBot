@@ -26,6 +26,8 @@ namespace CakeBot
 
         // Prompts names
         private const string NamePrompt = "namePrompt";
+        private const string CakeNamePrompt = "cakeNamePrompt";
+        private const string CakeFlavourPrompt = "cakeFlavourPrompt";
 
         // Minimum length requirements for city and name
         private const int NameLengthMinValue = 3;
@@ -44,13 +46,14 @@ namespace CakeBot
             : base(nameof(GreetingDialog))
         {
             UserProfileAccessor = userProfileStateAccessor ?? throw new ArgumentNullException(nameof(userProfileStateAccessor));
-
             // Add control flow dialogs
             var waterfallSteps = new WaterfallStep[]
             {
                     InitializeStateStepAsync,
                     PromptForNameStepAsync,
                     DisplayGreetingStateStepAsync,
+                    PromptForCakeNameStepAsync,
+                    DisplayCakeStateStepAsync,
             };
             AddDialog(new WaterfallDialog(ProfileDialog, waterfallSteps));
             AddDialog(new TextPrompt(NamePrompt, ValidateName));
@@ -108,19 +111,65 @@ namespace CakeBot
             }
         }
 
+        private async Task<DialogTurnResult> PromptForCakeNameStepAsync(
+                                                WaterfallStepContext stepContext,
+                                                CancellationToken cancellationToken)
+        {
+            var greetingState = await UserProfileAccessor.GetAsync(stepContext.Context);
+
+            // if we have everything we need, greet user and return.
+            if (greetingState != null && !string.IsNullOrWhiteSpace(greetingState.CakeName))
+            {
+                return await GreetUser(stepContext);
+            }
+
+            if (string.IsNullOrWhiteSpace(greetingState.CakeName))
+            {
+                // prompt for name, if missing
+                var opts = new PromptOptions
+                {
+                    Prompt = new Activity
+                    {
+                        Type = ActivityTypes.Message,
+                        Text = $"So {greetingState.Name} , what cake do you fancy?",
+                    },
+                };
+                return await stepContext.PromptAsync(NamePrompt, opts);
+            }
+            else
+            {
+                return await stepContext.NextAsync();
+            }
+        }
+
         private async Task<DialogTurnResult> DisplayGreetingStateStepAsync(
                                                     WaterfallStepContext stepContext,
                                                     CancellationToken cancellationToken)
         {
-            // Save city, if prompted.
             var greetingState = await UserProfileAccessor.GetAsync(stepContext.Context);
 
             var lowerCaseName = stepContext.Result as string;
             if (string.IsNullOrWhiteSpace(greetingState.Name) &&
                 !string.IsNullOrWhiteSpace(lowerCaseName))
             {
-                // capitalize and set city
                 greetingState.Name = char.ToUpper(lowerCaseName[0]) + lowerCaseName.Substring(1);
+                await UserProfileAccessor.SetAsync(stepContext.Context, greetingState);
+            }
+
+            return await stepContext.NextAsync();
+        }
+
+        private async Task<DialogTurnResult> DisplayCakeStateStepAsync(
+                                                    WaterfallStepContext stepContext,
+                                                    CancellationToken cancellationToken)
+        {
+            var greetingState = await UserProfileAccessor.GetAsync(stepContext.Context);
+
+            var lowerCaseName = stepContext.Result as string;
+            if (string.IsNullOrWhiteSpace(greetingState.CakeName) &&
+                !string.IsNullOrWhiteSpace(lowerCaseName))
+            {
+                greetingState.CakeName = char.ToUpper(lowerCaseName[0]) + lowerCaseName.Substring(1);
                 await UserProfileAccessor.SetAsync(stepContext.Context, greetingState);
             }
 
@@ -157,7 +206,7 @@ namespace CakeBot
             var greetingState = await UserProfileAccessor.GetAsync(context);
 
             // Display their profile information and end dialog.
-            await context.SendActivityAsync($"Hi {greetingState.Name}, what can I do for you!");
+            await context.SendActivityAsync($"Ok {greetingState.Name}, Let me see what I can do");
             return await stepContext.EndDialogAsync();
         }
     }
