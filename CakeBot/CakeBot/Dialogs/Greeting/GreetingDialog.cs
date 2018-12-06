@@ -2,12 +2,17 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using CakeBot.Helpers;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CakeBot
 {
@@ -207,7 +212,15 @@ namespace CakeBot
 
             // Display their profile information and end dialog.
             await context.SendActivityAsync($"Ok {greetingState.Name}, Let me see what I can do");
+            await context.SendActivityAsync(GetCake(greetingState.CakeName));
             return await stepContext.EndDialogAsync();
+        }
+
+        private static string GetCake(string cake)
+        {
+            var searchHelper = new BingSearchAPIs();
+            searchHelper.SearchTerm = cake;
+            return searchHelper.GetSearchResultUrl();
         }
     }
 }
