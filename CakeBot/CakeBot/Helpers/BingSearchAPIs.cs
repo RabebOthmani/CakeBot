@@ -9,7 +9,7 @@ namespace CakeBot.Helpers
 {
     public class BingSearchAPIs
     {
-        private const string SubscriptionKey = "3f78937a9e514fbb9511254a23755f20";
+        private const string SubscriptionKey = "YOUR_KEY";
 
         private const string UriBase = "https://api.cognitive.microsoft.com/bing/v7.0/images/search";
 
